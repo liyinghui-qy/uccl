@@ -1,0 +1,1 @@
+This project aims to provide an universal collabrative communication library for mainstream platforms.
