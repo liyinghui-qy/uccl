@@ -11,6 +11,7 @@ from operatorspy import (
 )
 
 import torch
+from multiprocessing import Process
 
 class CommunicatorDescriptor(Structure):
     _fields_ = [("device", c_int)]
@@ -19,9 +20,10 @@ def test(lib, descriptor, torch_device):
     lib.communicator_init(descriptor)
     comm = lib.get_communicator(descriptor)
     a = ctypes.c_int(0)
+    b = ctypes.c_int(0)
     lib.get_comm_size(descriptor, comm, ctypes.byref(a))
-    print("communicator size is:")
-    print(a.value)
+    lib.get_comm_rank(descriptor, comm, ctypes.byref(b))
+    print("communicator size is:", a.value, "; communicator rank is:", b.value)
     
 
 
@@ -31,11 +33,9 @@ def test_cpu(lib):
     test(lib, descriptor, "cpu")
     lib.destroyCommunicatorDescriptor(descriptor)
 
-
-if __name__ == "__main__":
+def worker():
     dl = ctypes.cdll.LoadLibrary
-    lib = dl("/home/liyinghui/project/operators/build/linux/x86_64/release/liboperators.so")
-    print("load succeed!")
+    lib = open_lib()
     lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
     lib.communicator_init.restype = c_void_p
     lib.communicator_init.argtypes = [c_void_p]
@@ -43,5 +43,10 @@ if __name__ == "__main__":
     lib.get_communicator.argtypes = [c_void_p]
     lib.get_comm_size.restype = c_void_p
     lib.get_comm_size.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
+    lib.get_comm_rank.restype = c_void_p
+    lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     test_cpu(lib)
+
+if __name__ == "__main__":
+    worker()
     
