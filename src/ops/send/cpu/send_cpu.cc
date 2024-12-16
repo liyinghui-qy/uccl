@@ -4,5 +4,5 @@
 
 void cpu_send(void* sendbuff, int count, int datatype, int peer, Communicator* communicator) {
     MPI_Comm* comm = (MPI_Comm *)communicator;
-    MPI_Send(sendbuff, count, datatype, peer, 0, *comm);
+    MPI_Send(sendbuff, count, (MPI_Datatype)datatype, peer, 0, *comm);
 }
