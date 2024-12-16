@@ -8,6 +8,6 @@ typedef struct SendCpuDescriptor {
     Device device;
 } SendCpuDescriptor;
 
-void cpu_send(void* sendbuff, int count, int datatype, int peer, Communicator* communicator);
+void cpu_send(void* sendbuff, int count, CCLDatatype datatype, int peer, Communicator* communicator);
 
 #endif

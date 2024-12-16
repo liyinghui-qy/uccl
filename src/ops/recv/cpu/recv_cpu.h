@@ -8,6 +8,6 @@ typedef struct RecvCpuDescriptor {
     Device device;
 } RecvCpuDescriptor;
 
-void cpu_recv(void* recvbuff, int count, int datatype, int peer, Communicator* communicator, Status* status);
+void cpu_recv(void* recvbuff, int count, CCLDatatype datatype, int peer, Communicator* communicator, Status* status);
 
 #endif

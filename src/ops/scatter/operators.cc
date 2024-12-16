@@ -15,7 +15,7 @@ struct ScatterDescriptor {
     Device device;
 };
 
-__C __export void *createScatterescriptor(Device device, void *config) {
+__C __export void *createScatterDescriptor(Device device, void *config) {
     switch (device) {
 #ifdef ENABLE_CPU
         case DevCpu:

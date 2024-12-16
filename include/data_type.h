@@ -1,5 +1,5 @@
-﻿#ifndef __DATA_TYPE_H__
-#define __DATA_TYPE_H__
+﻿#ifndef __CCL__DATA_TYPE_H__
+#define __CCL__DATA_TYPE_H__
 
 typedef struct DataLayout {
     unsigned short
@@ -25,5 +25,26 @@ const static struct DataLayout
     F32  = {1, 1, 4, 23,  8},
     F64  = {1, 1, 8, 52, 11};
 // clang-format on
+
+enum CCLDatatype {
+    CCL_CHAR,
+    CCL_SIGNED_CHAR,
+    CCL_UNSIGNED_CHAR,
+    CCL_BYTE,
+    CCL_WCHAR,
+    CCL_SHORT,
+    CCL_UNSIGNED_SHORT,
+    CCL_INT,
+    CCL_UNSIGNED,
+    CCL_LONG,
+    CCL_UNSIGNED_LONG,
+    CCL_FLOAT,
+    CCL_DOUBLE,
+    CCL_LONG_DOUBLE,
+    CCL_LONG_LONG_INT,
+    CCL_UNSIGNED_LONG_LONG,
+    CCL_LONG_LONG      
+};
+
 
 #endif// __DATA_TYPE_H__

@@ -61,7 +61,7 @@ __C __export void destroySendDescriptor(SendDescriptor *descriptor) {
 }
 
 
-__C __export void Send(SendDescriptor *descriptor, void* sendbuff, int count, int datatype, int peer, Communicator* communicator) {
+__C __export void Send(SendDescriptor *descriptor, void* sendbuff, int count, CCLDatatype datatype, int peer, Communicator* communicator) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:

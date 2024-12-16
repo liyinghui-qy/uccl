@@ -61,7 +61,7 @@ __C __export void destroyRecvDescriptor(RecvDescriptor *descriptor) {
 }
 
 
-__C __export void Recv(RecvDescriptor *descriptor, void* recvbuff, int count, int datatype, int peer, Communicator* communicator, Status* status) {
+__C __export void Recv(RecvDescriptor *descriptor, void* recvbuff, int count, CCLDatatype datatype, int peer, Communicator* communicator, Status* status) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:
