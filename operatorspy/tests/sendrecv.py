@@ -3,6 +3,7 @@ from ctypes import *
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from datatypes import *
 from operatorspy import (
     open_lib,
     to_tensor,
@@ -25,13 +26,13 @@ class RecvDescriptor(Structure):
 def test_send(lib, descriptor, torch_device):
     comm = lib.get_communicator(descriptor)
     a = ctypes.c_int(100)
-    lib.Send(descriptor, ctypes.byref(a), 1, 0x4c000405, 1, comm)
+    lib.Send(descriptor, ctypes.byref(a), 1, datatypes.CCL_INT, 1, comm)
     print("Send data", a.value, "to rank 1", flush = True)
 
 def test_recv(lib, descriptor, torch_device):
     comm = lib.get_communicator(descriptor)
     b = ctypes.c_int(0)
-    lib.Recv(descriptor, ctypes.byref(b), 1, 0x4c000405, 0, comm, None)
+    lib.Recv(descriptor, ctypes.byref(b), 1, datatypes.CCL_INT, 0, comm, None)
     print("Recv data", b.value, "from rank 0", flush = True)
     
 def test_cpu(lib):
