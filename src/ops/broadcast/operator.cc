@@ -61,7 +61,7 @@ __C __export void destroyBroadcastDescriptor(BroadcastDescriptor *descriptor) {
 }
 
 
-__C __export void Broadcast(BroadcastDescriptor *descriptor, void* buff, int count, int datatype, int root, Communicator* communicator, Stream* stream) {
+__C __export void Broadcast(BroadcastDescriptor *descriptor, void* buff, int count, CCLDatatype datatype, int root, Communicator* communicator, Stream* stream) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:

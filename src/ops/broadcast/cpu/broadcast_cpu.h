@@ -8,6 +8,6 @@ typedef struct BroadcastCpuDescriptor {
     Device device;
 } BroadcastCpuDescriptor;
 
-void cpu_broadcast(void* buff, int count, int datatype, int root, Communicator* communicator);
+void cpu_broadcast(void* buff, int count, CCLDatatype datatype, int root, Communicator* communicator);
 
 #endif
