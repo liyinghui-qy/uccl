@@ -27,23 +27,25 @@ def test_cpu(lib):
     comm_size = ctypes.c_int(0)
     lib.get_comm_size(descriptor, comm, ctypes.byref(comm_size))
     
-    data_size = 20
+    data_size = 4
     send_array_type = ctypes.c_int * data_size
     send_data = send_array_type()
-    recv_array_type = ctypes.c_int * data_size
+    recv_array_type = ctypes.c_int * (data_size * comm_size.value) 
     recv_data = recv_array_type()
 
     for i in range(data_size):
         send_data[i] = random.randint(0, 100)
 
     if rank.value == 0:
-        lib.Broadcast(descriptor, ctypes.byref(send_data), data_size,  datatypes.CCL_INT, 0, comm, None)
+        lib.Gather(descriptor, ctypes.byref(send_data), data_size,  datatypes.CCL_INT, ctypes.byref(recv_data), data_size,  datatypes.CCL_INT, 0, comm, None)
         python_list = [send_data[i] for i in range(data_size)]
-        print("broadcast data is:", python_list)
+        print("rank", rank.value, "sends data:", python_list)
+        python_list = [recv_data[i] for i in range(data_size*comm_size.value)]
+        print("gathered data is:", python_list)
     else:
-        lib.Broadcast(descriptor, ctypes.byref(recv_data), data_size,  datatypes.CCL_INT, 0, comm, None)
-        python_list = [recv_data[i] for i in range(data_size)]
-        print("rank", rank.value, "receives data:", python_list)
+        lib.Gather(descriptor, ctypes.byref(send_data), data_size,  datatypes.CCL_INT, None, data_size, datatypes.CCL_INT, 0, comm, None)
+        python_list = [send_data[i] for i in range(data_size)]
+        print("rank", rank.value, "sends data:", python_list)
     lib.destroyCommunicatorDescriptor(descriptor)
 
 if __name__ == "__main__":
@@ -58,9 +60,9 @@ if __name__ == "__main__":
     lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     lib.get_comm_size.restype = c_void_p
     lib.get_comm_size.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
-    lib.createBroadcastDescriptor.restype = c_void_p
-    lib.Broadcast.restype = c_void_p
-    lib.Broadcast.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, c_void_p, c_void_p]
+    lib.createGatherDescriptor.restype = c_void_p
+    lib.Gather.restype = c_void_p
+    lib.Gather.argtypes = [c_void_p, c_void_p, c_int, c_int, c_void_p, c_int, c_int, c_int, c_void_p, c_void_p]
     
     print("Start test", flush = True)
     test_cpu(lib)
