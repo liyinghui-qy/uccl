@@ -65,7 +65,7 @@ __C __export void Reducescatter(ReducescatterDescriptor *descriptor, void* sendb
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:
-            cpu_reducesactter(sendbuff, recvbuff, recvcounts, datatype, op, communicator);
+            cpu_reducescatter(sendbuff, recvbuff, recvcounts, datatype, op, communicator);
             break;
 #endif
 #ifdef ENABLE_NV_GPU

@@ -4,6 +4,7 @@ import ctypes
 from ctypes import c_void_p, c_int, c_int64, c_uint64, Structure, POINTER
 from .data_layout import *
 
+
 Device = c_int
 Optype = c_int
 
@@ -48,13 +49,6 @@ def open_lib():
         library_path is not None
     ), f"Cannot find operators.dll or liboperators.so. Check if {LIB_OPERATORS_DIR} is set correctly."
     lib = ctypes.CDLL(library_path)
-    lib.createTensorDescriptor.argtypes = [
-        POINTER(POINTER(TensorLayout)),
-        c_uint64,
-        POINTER(c_uint64),
-        POINTER(c_int64),
-        DataLayout,
-    ]
     return lib
 
 

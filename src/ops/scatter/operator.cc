@@ -61,7 +61,7 @@ __C __export void destroyScatterDescriptor(ScatterDescriptor *descriptor) {
 }
 
 
-__C __export void Scatter(ScatterDescriptor *descriptor, void* sendbuff, int send_count, int send_datatype, void* recvbuff, int recv_count, int recv_datatype, int root, Communicator* communicator, Stream* stream) {
+__C __export void Scatter(ScatterDescriptor *descriptor, void* sendbuff, int send_count, CCLDatatype send_datatype, void* recvbuff, int recv_count, CCLDatatype recv_datatype, int root, Communicator* communicator, Stream* stream) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:

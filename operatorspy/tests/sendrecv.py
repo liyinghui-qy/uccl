@@ -6,13 +6,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from datatypes import *
 from operatorspy import (
     open_lib,
-    to_tensor,
-    CTensor,
     DeviceEnum,
 )
-
-import torch
-from multiprocessing import Process
 
 class CommunicatorDescriptor(Structure):
     _fields_ = [("device", c_int)]
