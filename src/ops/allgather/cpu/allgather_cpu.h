@@ -8,6 +8,6 @@ typedef struct AllgatherCpuDescriptor {
     Device device;
 } AllgatherCpuDescriptor;
 
-void cpu_allgather(void* sendbuff, int send_count, int send_datatype, void* recvbuff, int recv_count, int recv_datatype, Communicator* communicator);
+void cpu_allgather(void* sendbuff, int send_count, CCLDatatype send_datatype, void* recvbuff, int recv_count, CCLDatatype recv_datatype, Communicator* communicator);
 
 #endif
