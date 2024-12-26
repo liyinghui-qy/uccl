@@ -61,7 +61,7 @@ __C __export void destroyReducescatterDescriptor(ReducescatterDescriptor *descri
 }
 
 
-__C __export void Reducescatter(ReducescatterDescriptor *descriptor, void* sendbuff, void* recvbuff, int* recvcounts, int datatype, int op, Communicator* communicator, Stream* stream) {
+__C __export void Reducescatter(ReducescatterDescriptor *descriptor, void* sendbuff, void* recvbuff, int* recvcounts, CCLDatatype datatype, CCLOp op, Communicator* communicator, Stream* stream) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:

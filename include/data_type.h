@@ -46,5 +46,22 @@ enum CCLDatatype {
     CCL_LONG_LONG      
 };
 
+enum CCLOp { 
+  CCL_OP_NULL,
+  CCL_MAX,
+  CCL_MIN,
+  CCL_SUM,
+  CCL_PROD,
+  CCL_LAND,
+  CCL_BAND,
+  CCL_LOR,
+  CCL_BOR,
+  CCL_LXOR,
+  CCL_BXOR,
+  CCL_MINLOC,
+  CCL_MAXLOC,
+  CCL_REPLACE
+};
+
 
 #endif// __DATA_TYPE_H__

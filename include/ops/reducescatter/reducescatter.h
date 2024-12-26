@@ -10,6 +10,6 @@ typedef struct Stream Stream;
 
 __C __export void *createReducescatterDescriptor(Device device, void *config);
 __C __export void destroyReducescatterDescriptor(ReducescatterDescriptor *descriptor);
-__C __export void Reducescatter(ReducescatterDescriptor *descriptor, void* sendbuff, void* recvbuff, int* recvcounts, int datatype, int op, Communicator* communicator, Stream* stream);
+__C __export void Reducescatter(ReducescatterDescriptor *descriptor, void* sendbuff, void* recvbuff, int* recvcounts, CCLDatatype datatype, CCLOp op, Communicator* communicator, Stream* stream);
 
 #endif

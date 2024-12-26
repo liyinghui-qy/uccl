@@ -8,4 +8,6 @@
 
 MPI_Datatype ccl_to_mpi_datatype(CCLDatatype datatype);
 
+MPI_Op ccl_to_mpi_op(CCLOp op);
+
 #endif // __COMMON_CPU_H__

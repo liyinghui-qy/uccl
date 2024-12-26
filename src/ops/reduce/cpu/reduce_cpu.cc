@@ -1,8 +1,11 @@
 #include "reduce_cpu.h"
 #include "mpi.h"
 #include<stdlib.h>
+#include "../../../devices/cpu/common_cpu.h"
 
-void cpu_reduce(void* sendbuff, void* recvbuff, int count, int datatype, int op, int root, Communicator* communicator) {
+void cpu_reduce(void* sendbuff, void* recvbuff, int count, CCLDatatype datatype, CCLOp op, int root, Communicator* communicator) {
     MPI_Comm* comm = (MPI_Comm *)communicator;
-    MPI_Reduce(sendbuff, recvbuff, count, datatype, op, root, *comm);
+    MPI_Datatype datatype_mpi = ccl_to_mpi_datatype(datatype);
+    MPI_Op op_mpi = ccl_to_mpi_op(op);
+    MPI_Reduce(sendbuff, recvbuff, count, datatype_mpi, op_mpi, root, *comm);
 }

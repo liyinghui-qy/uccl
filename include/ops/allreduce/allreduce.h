@@ -10,6 +10,6 @@ typedef struct Stream Stream;
 
 __C __export void *createAllreduceDescriptor(Device device, void *config);
 __C __export void destroyAllreduceDescriptor(AllreduceDescriptor *descriptor);
-__C __export void Allreduce(AllreduceDescriptor *descriptor, void* sendbuff, void* recvbuff, int count, int datatype, int op, Communicator* communicator, Stream* stream);
+__C __export void Allreduce(AllreduceDescriptor *descriptor, void* sendbuff, void* recvbuff, int count, CCLDatatype datatype, CCLOp op, Communicator* communicator, Stream* stream);
 
 #endif

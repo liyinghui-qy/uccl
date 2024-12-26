@@ -41,3 +41,39 @@ MPI_Datatype ccl_to_mpi_datatype(CCLDatatype datatype) {
             break;
     }
 }
+
+MPI_Op ccl_to_mpi_op(CCLOp op) {
+    switch (op) {
+        case CCL_OP_NULL:
+            return MPI_OP_NULL;
+        case CCL_MAX:
+            return MPI_MAX;
+        case CCL_MIN:
+            return MPI_MIN;
+        case CCL_SUM:
+            return MPI_SUM;
+        case CCL_PROD:
+            return MPI_PROD;
+        case CCL_LAND:
+            return MPI_LAND;
+        case CCL_BAND:
+            return MPI_BAND;
+        case CCL_LOR:
+            return MPI_LOR;
+        case CCL_BOR:
+            return MPI_BOR;
+        case CCL_LXOR:
+            return MPI_LXOR;
+        case CCL_BXOR:
+            return MPI_BXOR;
+        case CCL_MINLOC:
+            return MPI_MINLOC;
+        case CCL_MAXLOC:
+            return MPI_MAXLOC;
+        case CCL_REPLACE:
+            return MPI_REPLACE;
+        default:
+            return 0;
+            break;
+    }
+}

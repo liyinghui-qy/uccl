@@ -8,6 +8,6 @@ typedef struct ReduceCpuDescriptor {
     Device device;
 } ReduceCpuDescriptor;
 
-void cpu_reduce(void* sendbuff, void* recvbuff, int count, int datatype, int op, int root, Communicator* communicator);
+void cpu_reduce(void* sendbuff, void* recvbuff, int count, CCLDatatype datatype, CCLOp op, int root, Communicator* communicator);
 
 #endif

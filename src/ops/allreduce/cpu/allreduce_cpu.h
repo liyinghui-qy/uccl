@@ -8,6 +8,6 @@ typedef struct AllreduceCpuDescriptor {
     Device device;
 } AllreduceCpuDescriptor;
 
-void cpu_allreduce(void* sendbuff, void* recvbuff, int count, int datatype, int op, Communicator* communicator);
+void cpu_allreduce(void* sendbuff, void* recvbuff, int count, CCLDatatype datatype, CCLOp op, Communicator* communicator);
 
 #endif

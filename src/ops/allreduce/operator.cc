@@ -61,7 +61,7 @@ __C __export void destroyAllreduceDescriptor(AllreduceDescriptor *descriptor) {
 }
 
 
-__C __export void Allreduce(AllreduceDescriptor *descriptor, void* sendbuff, void* recvbuff, int count, int datatype, int op, Communicator* communicator, Stream* stream) {
+__C __export void Allreduce(AllreduceDescriptor *descriptor, void* sendbuff, void* recvbuff, int count, CCLDatatype datatype, CCLOp op, Communicator* communicator, Stream* stream) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:
