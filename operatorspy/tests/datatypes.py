@@ -16,3 +16,19 @@ class datatypes:
     CCL_LONG_LONG_INT = 14
     CCL_UNSIGNED_LONG_LONG = 15
     CCL_LONG_LONG = 16
+
+class ops:
+    CCL_OP_NULL = 0
+    CCL_MAX = 1
+    CCL_MIN = 2
+    CCL_SUM = 3
+    CCL_PROD = 4
+    CCL_LAND = 5
+    CCL_BAND = 6
+    CCL_LOR = 7
+    CCL_BOR = 8
+    CCL_LXOR = 9
+    CCL_BXOR = 10
+    CCL_MINLOC = 11
+    CCL_MAXLOC = 12
+    CCL_REPLACE = 13
