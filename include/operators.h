@@ -3,7 +3,6 @@
 
 #include "data_type.h"
 #include "device.h"
-#include "tensor.h"
 
 typedef enum DeviceEnum Device;
 typedef struct DataLayout DT;

@@ -43,7 +43,16 @@ enum CCLDatatype {
     CCL_LONG_DOUBLE,
     CCL_LONG_LONG_INT,
     CCL_UNSIGNED_LONG_LONG,
-    CCL_LONG_LONG      
+    CCL_LONG_LONG,
+    CCL_HALF,
+    CCL_INT8,
+    CCL_UINT8,
+    CCL_INT32,
+    CCL_UINT32,
+    CCL_INT64,
+    CCL_UINT64,
+    CCL_FLOAT16,
+    CCL_BFLOAT16
 };
 
 enum CCLOp { 

@@ -61,6 +61,7 @@ if has_config("nv-gpu") then
 
         set_toolchains("cuda")
         add_links("cublas")
+        add_links("nccl")
         add_cugencodes("native")
 
         if is_plat("windows") then

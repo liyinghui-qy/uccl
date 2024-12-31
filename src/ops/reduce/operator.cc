@@ -5,7 +5,7 @@
 #include "cpu/reduce_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/reduce_cuda.h"
+//#include "cuda/reduce_cuda.h"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/reduce_cnnl.h"
@@ -21,11 +21,13 @@ __C __export void *createReduceDescriptor(Device device, void *config) {
         case DevCpu:
             return (ReduceDescriptor *) (new ReduceCpuDescriptor{device});
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
             return (ReduceDescriptor *) (new ReduceCudaDescriptor(device));
         }
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (ReduceDescriptor *) (new ReduceBangDescriptor(device));
@@ -44,11 +46,13 @@ __C __export void destroyReduceDescriptor(ReduceDescriptor *descriptor) {
             delete (ReduceCpuDescriptor *) (descriptor);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (ReduceCudaDescriptor *) (descriptor);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (ReduceDescriptor *) (descriptor);
@@ -68,11 +72,13 @@ __C __export void Reduce(ReduceDescriptor *descriptor, void* sendbuff, void* rec
             cpu_reduce(sendbuff, recvbuff, count, datatype, op, root, communicator);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_reduce(sendbuff, recvbuff, count, datatype, op, root, communicator, stream);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_reduce(sendbuff, recvbuff, count, datatype, op, root, communicator, stream);

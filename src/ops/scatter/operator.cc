@@ -5,7 +5,7 @@
 #include "cpu/scatter_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/scatter_cuda.h"
+//#include "cuda/scatter_cuda.h"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/scatter_cnnl.h"
@@ -21,11 +21,13 @@ __C __export void *createScatterDescriptor(Device device, void *config) {
         case DevCpu:
             return (ScatterDescriptor *) (new ScatterCpuDescriptor{device});
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
             return (ScatterDescriptor *) (new ScatterCudaDescriptor(device));
         }
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (ScatterDescriptor *) (new ScatterBangDescriptor(device));
@@ -44,11 +46,13 @@ __C __export void destroyScatterDescriptor(ScatterDescriptor *descriptor) {
             delete (ScatterCpuDescriptor *) (descriptor);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (ScatterCudaDescriptor *) (descriptor);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (ScatterDescriptor *) (descriptor);
@@ -68,11 +72,13 @@ __C __export void Scatter(ScatterDescriptor *descriptor, void* sendbuff, int sen
             cpu_scatter(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, root, communicator);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_scatter(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, root, communicator, stream);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_scatter(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, root, communicator, stream);

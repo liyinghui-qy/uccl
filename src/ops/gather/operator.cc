@@ -5,7 +5,7 @@
 #include "cpu/gather_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/gather_cuda.h"
+//#include "cuda/gather_cuda.h"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/gather_cnnl.h"
@@ -21,11 +21,13 @@ __C __export void *createGatherDescriptor(Device device, void *config) {
         case DevCpu:
             return (GatherDescriptor *) (new GatherCpuDescriptor{device});
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
             return (GatherDescriptor *) (new GatherCudaDescriptor(device));
         }
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (GatherDescriptor *) (new GatherBangDescriptor(device));
@@ -44,11 +46,13 @@ __C __export void destroyGatherDescriptor(GatherDescriptor *descriptor) {
             delete (GatherCpuDescriptor *) (descriptor);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (GatherCudaDescriptor *) (descriptor);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (GatherDescriptor *) (descriptor);
@@ -68,11 +72,13 @@ __C __export void Gather(GatherDescriptor *descriptor, void* sendbuff, int send_
             cpu_gather(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, root, communicator);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_gather(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, root, communicator, stream);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_gater(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, root, communicator, stream);

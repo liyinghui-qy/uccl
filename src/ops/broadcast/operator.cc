@@ -5,7 +5,7 @@
 #include "cpu/broadcast_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/broadcast_cuda.h"
+//#include "cuda/broadcast_cuda.h"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/broadcast_cnnl.h"
@@ -21,11 +21,13 @@ __C __export void *createBroadcastDescriptor(Device device, void *config) {
         case DevCpu:
             return (BroadcastDescriptor *) (new BroadcastCpuDescriptor{device});
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
             return (BroadcastDescriptor *) (new BroadcastCudaDescriptor(device));
         }
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (BroadcastDescriptor *) (new BroadcastBangDescriptor(device));
@@ -44,11 +46,13 @@ __C __export void destroyBroadcastDescriptor(BroadcastDescriptor *descriptor) {
             delete (BroadcastCpuDescriptor *) (descriptor);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (BroadcastCudaDescriptor *) (descriptor);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (BroadcastDescriptor *) (descriptor);
@@ -68,11 +72,13 @@ __C __export void Broadcast(BroadcastDescriptor *descriptor, void* buff, int cou
             cpu_broadcast(buff, count, datatype, root, communicator);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_broadcast(buff, count, datatype, root, communicator, stream);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_recv(buff, count, datatype, root, communicator, stream);

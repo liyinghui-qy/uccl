@@ -5,7 +5,7 @@
 #include "cpu/alltoall_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/alltoall_cuda.h"
+//#include "cuda/alltoall_cuda.h"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/alltoall_cnnl.h"
@@ -21,11 +21,13 @@ __C __export void *createAlltoallDescriptor(Device device, void *config) {
         case DevCpu:
             return (AlltoallDescriptor *) (new AlltoallCpuDescriptor{device});
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
             return (AlltoallDescriptor *) (new AlltoallCudaDescriptor(device));
         }
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (AlltoallDescriptor *) (new AlltoallBangDescriptor(device));
@@ -44,11 +46,13 @@ __C __export void destroyAlltoallDescriptor(AlltoallDescriptor *descriptor) {
             delete (AlltoallCpuDescriptor *) (descriptor);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (AlltoallCudaDescriptor *) (descriptor);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (AlltoallDescriptor *) (descriptor);
@@ -68,11 +72,13 @@ __C __export void Alltoall(AlltoallDescriptor *descriptor, void* sendbuff, int s
             cpu_alltoall(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, communicator);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_alltoall(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, communicator, stream);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_alltoall(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, communicator, stream);

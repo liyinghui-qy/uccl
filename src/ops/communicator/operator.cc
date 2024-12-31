@@ -5,7 +5,7 @@
 #include "cpu/communicator_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/communicator_cuda.h"
+#include "cuda/communicator_cuda.cuh"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/communicator_cnnl.h"
@@ -23,12 +23,12 @@ __C CommunicatorDescriptor *createCommunicatorDescriptor(Device device, void *co
 #endif
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
-            return (CommunicatorDescriptor *) (new ComunicatorCudaDescriptor(device));
+            return (CommunicatorDescriptor *) (new CommunicatorCudaDescriptor{device});
         }
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
-            return (CommunicatorDescriptor *) (new CommunicatorBangDescriptor(device));
+            return (CommunicatorDescriptor *) (new CommunicatorBangDescriptor{device});
         }
 #endif
         default:
@@ -60,7 +60,7 @@ __C void destroyCommunicatorDescriptor(CommunicatorDescriptor *descriptor) {
     }
 }
 
-__C void communicator_init(CommunicatorDescriptor* descriptor) {
+__C void communicator_init(CommunicatorDescriptor* descriptor, Communicator* comm) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:
@@ -69,7 +69,7 @@ __C void communicator_init(CommunicatorDescriptor* descriptor) {
 #endif
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
-            communicator_nv_gpu_init();
+            communicator_nv_gpu_init(descriptor, comm);
             break;
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
@@ -91,7 +91,7 @@ __C Communicator *get_communicator(CommunicatorDescriptor* descriptor) {
 #endif
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
-            return get_nv_gpu_communicator();
+            return get_nv_gpu_communicator(descriptor);
         }
 #endif
 #ifdef ENABLE_CAMBRICON_MLU

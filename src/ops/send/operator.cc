@@ -5,7 +5,7 @@
 #include "cpu/send_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-#include "cuda/send_cuda.h"
+//#include "cuda/send_cuda.h"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/send_cnnl.h"
@@ -21,11 +21,13 @@ __C __export void *createSendDescriptor(Device device, void *config) {
         case DevCpu:
             return (SendDescriptor *) (new SendCpuDescriptor{device});
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
             return (SendDescriptor *) (new SendCudaDescriptor(device));
         }
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (SendDescriptor *) (new SendBangDescriptor(device));
@@ -44,11 +46,13 @@ __C __export void destroySendDescriptor(SendDescriptor *descriptor) {
             delete (SendCpuDescriptor *) (descriptor);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (SendCudaDescriptor *) (descriptor);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (SendBangDescriptor *) (descriptor);
@@ -68,11 +72,13 @@ __C __export void Send(SendDescriptor *descriptor, void* sendbuff, int count, CC
             cpu_send(sendbuff, count, datatype, peer, communicator);
             break;
 #endif
+/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_send(sendbuff, count, datatype, peer, communicator);
             break;
 #endif
+*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_send(sendbuff, count, datatype, peer, communicator);
