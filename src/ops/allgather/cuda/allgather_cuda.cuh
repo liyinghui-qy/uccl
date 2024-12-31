@@ -3,6 +3,9 @@
 
 #include "operators.h"
 #include "ops/allgather/allgather.h"
+#include <nccl.h>
+#include <cuda_runtime.h>
+#include "../../../devices/cuda/common_cuda.h"
 
 typedef struct AllgatherCudaDescriptor {
     Device device;

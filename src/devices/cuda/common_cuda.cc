@@ -1,7 +1,7 @@
 #include "common_cuda.h"
 
 
-ncclDataType_t ccl_to_mpi_datatype(CCLDatatype datatype) {
+ncclDataType_t ccl_to_cuda_datatype(CCLDatatype datatype) {
     switch(datatype) {
         case CCL_CHAR:
             return ncclChar;
@@ -29,5 +29,20 @@ ncclDataType_t ccl_to_mpi_datatype(CCLDatatype datatype) {
             return ncclBfloat16;
         default:
             return ncclChar;
+    }
+}
+
+ncclRedOp_t ccl_to_cuda_op(CCLOp op) {
+    switch(op) {
+        case CCL_SUM:
+            return ncclSum;
+        case CCL_PROD:
+            return ncclProd;
+        case CCL_MAX:
+            return ncclMax;
+        case CCL_MIN:
+            return ncclMin;
+        default:
+            return ncclSum;
     }
 }

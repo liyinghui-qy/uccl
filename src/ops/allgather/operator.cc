@@ -5,7 +5,7 @@
 #include "cpu/allgather_cpu.h"
 #endif
 #ifdef ENABLE_NV_GPU
-//#include "cuda/allgather_cuda.cuh"
+#include "cuda/allgather_cuda.cuh"
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/allgather_cnnl.h"
@@ -21,13 +21,11 @@ __C __export void *createAllgatherDescriptor(Device device, void *config) {
         case DevCpu:
             return (AllgatherDescriptor *) (new AllgatherCpuDescriptor{device});
 #endif
-/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
-            return (AllgatherDescriptor *) (new AllgatherCudaDescriptor(device));
+            return (AllgatherDescriptor *) (new AllgatherCudaDescriptor{device});
         }
 #endif
-*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             return (AllgatherDescriptor *) (new AllgatherBangDescriptor(device));
@@ -46,13 +44,11 @@ __C __export void destroyAllgatherDescriptor(AllgatherDescriptor *descriptor) {
             delete (AllgatherCpuDescriptor *) (descriptor);
             break;
 #endif
-/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             delete (AllgatherCudaDescriptor *) (descriptor);
             break;
 #endif
-*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu: {
             delete (AllgatherDescriptor *) (descriptor);
@@ -72,13 +68,11 @@ __C __export void Allgather(AllgatherDescriptor *descriptor, void* sendbuff, int
             cpu_allgather(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, communicator);
             break;
 #endif
-/*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
             nv_gpu_allgather(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, communicator, stream);
             break;
 #endif
-*/
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
             cnnl_allgater(sendbuff, send_count, send_datatype, recvbuff, recv_count, recv_datatype, communicator, stream);

@@ -65,7 +65,7 @@ __C __export void destroyRecvDescriptor(RecvDescriptor *descriptor) {
 }
 
 
-__C __export void Recv(RecvDescriptor *descriptor, void* recvbuff, int count, CCLDatatype datatype, int peer, Communicator* communicator, Status* status) {
+__C __export void Recv(RecvDescriptor *descriptor, void* recvbuff, int count, CCLDatatype datatype, int peer, Communicator* communicator, Status* status, Stream* stream) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:
@@ -75,7 +75,7 @@ __C __export void Recv(RecvDescriptor *descriptor, void* recvbuff, int count, CC
 /*
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
-            nv_gpu_recv(recvbuff, count, datatype, peer, communicator, status);
+            nv_gpu_recv(recvbuff, count, datatype, peer, communicator, status, stream);
             break;
 #endif
 */
