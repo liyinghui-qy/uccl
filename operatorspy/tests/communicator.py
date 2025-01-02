@@ -24,7 +24,6 @@ def test(lib, descriptor, torch_device):
     lib.get_comm_size(descriptor, comm, ctypes.byref(a))
     lib.get_comm_rank(descriptor, comm, ctypes.byref(b))
     print("communicator size is:", a.value, "; communicator rank is:", b.value)
-    
 
 
 def test_cpu(lib):
@@ -37,6 +36,7 @@ def worker():
     dl = ctypes.cdll.LoadLibrary
     lib = open_lib()
     lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
+    lib.createCommunicatorDescrupotr.argtypes = [ctypes.c_int, c_void_p]
     lib.communicator_init.restype = c_void_p
     lib.communicator_init.argtypes = [c_void_p]
     lib.get_communicator.restype = c_void_p

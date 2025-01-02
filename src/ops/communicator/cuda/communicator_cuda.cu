@@ -3,14 +3,6 @@
 #include "communicator_cuda.cuh"
 #include "../../../devices/cuda/common_cuda.h"
 
-#define CUDACHECK(cmd) do {                         \
-    cudaError_t err = cmd;                          \
-    if (err != cudaSuccess) {                       \
-        std::cerr << "CUDA error: " << cudaGetErrorString(err) << " at " << __FILE__ << ":" << __LINE__ << std::endl; \
-        exit(EXIT_FAILURE);                         \
-    }                                               \
-} while(0)
-
 #define NCCLCHECK(cmd) do {                         \
     ncclResult_t res = cmd;                         \
     if (res != ncclSuccess) {                       \
