@@ -10,11 +10,12 @@ from operatorspy import (
     DeviceEnum,
 )
 
-import torch
-from multiprocessing import Process
-
 class CommunicatorDescriptor(Structure):
     _fields_ = [("device", c_int)]
+
+class Config(ctypes.Structure):
+    _fields_ = [("num_gpus", ctypes.c_int),
+                ("devices", ctypes.POINTER(ctypes.c_int))]
 
 def test(lib, descriptor, torch_device):
     lib.communicator_init(descriptor)
@@ -32,20 +33,37 @@ def test_cpu(lib):
     test(lib, descriptor, "cpu")
     lib.destroyCommunicatorDescriptor(descriptor)
 
+def test_gpu(lib):
+    device = DeviceEnum.DEVICE_CUDA
+    config = Config()
+    devices_data = [0, 1]
+    config.num_gpus = len(devices_data)
+    devices_type = ctypes.c_int * config.num_gpus
+    config.devices = devices_type(*devices_data)
+    descriptor = lib.createCommunicatorDescriptor(device, ctypes.byref(config))
+    comm = lib.get_communicator(descriptor)
+    lib.communicator_init(descriptor, comm)
+    a = ctypes.c_int(0)
+    b = ctypes.c_int(0)
+    lib.get_comm_size(descriptor, comm, ctypes.byref(a))
+    lib.get_comm_rank(descriptor, comm, ctypes.byref(b))
+    print("communicator size is:", a.value, "; communicator rank is:", b.value)
+    lib.destroyCommunicatorDescriptor(descriptor)
+
 def worker():
     dl = ctypes.cdll.LoadLibrary
     lib = open_lib()
     lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
-    lib.createCommunicatorDescrupotr.argtypes = [ctypes.c_int, c_void_p]
+    lib.createCommunicatorDescriptor.argtypes = [ctypes.c_int, c_void_p]
     lib.communicator_init.restype = c_void_p
-    lib.communicator_init.argtypes = [c_void_p]
+    lib.communicator_init.argtypes = [c_void_p, c_void_p]
     lib.get_communicator.restype = c_void_p
     lib.get_communicator.argtypes = [c_void_p]
     lib.get_comm_size.restype = c_void_p
     lib.get_comm_size.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     lib.get_comm_rank.restype = c_void_p
     lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
-    test_cpu(lib)
+    test_gpu(lib)
 
 if __name__ == "__main__":
     worker()

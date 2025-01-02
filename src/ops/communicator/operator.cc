@@ -15,6 +15,11 @@ struct CommunicatorDescriptor {
     Device device;
 };
 
+struct Config{
+    const int num_gpus;
+    const int* devices;
+};
+
 __C CommunicatorDescriptor *createCommunicatorDescriptor(Device device, void *config) {
     switch (device) {
 #ifdef ENABLE_CPU
@@ -23,7 +28,8 @@ __C CommunicatorDescriptor *createCommunicatorDescriptor(Device device, void *co
 #endif
 #ifdef ENABLE_NV_GPU
         case DevNvGpu: {
-            return (CommunicatorDescriptor *) (new CommunicatorCudaDescriptor{device});
+            Config* conf_gpu = (Config*) config;
+            return (CommunicatorDescriptor *) (new CommunicatorCudaDescriptor{device, conf_gpu->num_gpus, conf_gpu->devices});
         }
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
@@ -137,12 +143,12 @@ __C void get_comm_rank(CommunicatorDescriptor* descriptor, Communicator* comm, i
 #endif
 #ifdef ENABLE_NV_GPU
         case DevNvGpu:
-            get_nv_gpu_comm_size(comm, rank);
+            get_nv_gpu_comm_rank(comm, rank);
             break;
 #endif
 #ifdef ENABLE_CAMBRICON_MLU
         case DevCambriconMlu:
-            get_cnnl_comm_size(comm, rank);
+            get_cnnl_comm_rank(comm, rank);
             break;
 #endif
         default:
