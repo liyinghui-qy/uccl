@@ -5,6 +5,5 @@
 #include "device.h"
 
 typedef enum DeviceEnum Device;
-typedef struct DataLayout DT;
 
 #endif// __OPERATORS_H__

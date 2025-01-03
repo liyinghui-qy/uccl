@@ -5,8 +5,11 @@
 #include "../../operators.h"
 
 typedef struct CommunicatorDescriptor CommunicatorDescriptor;
-typedef struct Communicator Communicator;
-
+struct Communicator {
+    Device deviceType;
+    unsigned int deviceID; // the actual device ID, not rank number
+    void *comm;   // the actual communication object
+};
 
 __C __export CommunicatorDescriptor *createCommunicatorDescriptor(Device, void *config);
 __C __export void destroyCommunicatorDescriptor(CommunicatorDescriptor *descriptor);
