@@ -2,26 +2,6 @@
 
 跨平台高性能通用通信算子库。形式为 C 接口动态库。
 
-采用二段式算子设计，每个算子都实现并对外暴露以下的 C 接口:
-
-- 第一阶段：构造算子 Descriptor。用户提供的算子名称、硬件、以及算子配置（如计算的数据类型、计算排布等），相应模组会被 load 到硬件上。
-
-  ```C
-  void* createOpDescriptor(Device, void *config);
-  ```
-
-- 第二阶段：计算。根据一阶段的 Descriptor，执行相应计算，用户需要提供输入输出张量，以及硬件计算流（CPU 为 NULL）。
-
-  ```C
-  void op(void *descriptor, Tensor output, Tensor input, void *stream);
-  ```
-
-- 销毁 Descriptor。
-
-  ```C
-  void destroyOpDescriptor(void *descriptor);
-  ```
-
 ## 一、使用说明
 
 ### 依赖安装
