@@ -1,7 +1,6 @@
 #ifndef __CPU_ALLREDUCE_H__
 #define __CPU_ALLREDUCE_H__
 
-#include "operators.h"
 #include "ops/allreduce/allreduce.h"
 
 typedef struct AllreduceCpuDescriptor {

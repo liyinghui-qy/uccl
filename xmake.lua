@@ -2,9 +2,6 @@ add_rules("mode.debug", "mode.release")
 
 add_includedirs("include")
 
-add_includedirs("/home/liyinghui/bin/openmpi/include")
-
-add_linkdirs("/home/liyinghui/bin/openmpi/lib")
 
 option("cpu")
     set_default(true)
@@ -33,23 +30,21 @@ if is_mode("debug") then
 end
 
 if has_config("cpu") then
-
     add_defines("ENABLE_CPU")
     target("cpu")
         set_kind("static")
-
         if not is_plat("windows") then
             add_cxflags("-fPIC")
         end
-
         set_languages("cxx17")
         add_files("src/devices/cpu/*.cc", "src/ops/*/cpu/*.cc")
         add_cxflags("-fopenmp")
         add_ldflags("-fopenmp")
+        add_includedirs("$(env MPI_HOME)/include")
+        add_linkdirs("$(env MPI_HOME)/lib")
         add_packages("mpi")
         add_links("mpi")
     target_end()
-
 end
 
 if has_config("nv-gpu") then

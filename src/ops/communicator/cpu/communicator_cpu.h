@@ -1,7 +1,6 @@
 #ifndef __CPU_COMMUNICATOR_H__
 #define __CPU_COMMUNICATOR_H__
 
-#include "operators.h"
 #include "ops/communicator/communicator.h"
 typedef struct CommunicatorCpuDescriptor {
     Device device;

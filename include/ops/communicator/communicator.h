@@ -2,15 +2,9 @@
 #define COMMUNICATOR_H
 
 #include "../../export.h"
-#include "../../operators.h"
+#include "../../uccl.h"
 
 typedef struct CommunicatorDescriptor CommunicatorDescriptor;
-struct Communicator {
-    Device deviceType;
-    unsigned int deviceID; // the actual device ID, not rank number
-    void *comm;   // the actual communication object
-};
-
 __C __export CommunicatorDescriptor *createCommunicatorDescriptor(Device, void *config);
 __C __export void destroyCommunicatorDescriptor(CommunicatorDescriptor *descriptor);
 __C __export void communicator_init(CommunicatorDescriptor* descriptor, Communicator* comm);

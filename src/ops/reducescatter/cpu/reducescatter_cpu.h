@@ -1,7 +1,6 @@
 #ifndef __CPU_REDUCESCATTER_H__
 #define __CPU_REDUCESCATTER_H__
 
-#include "operators.h"
 #include "ops/reducescatter/reducescatter.h"
 
 typedef struct ReducescatterCpuDescriptor {

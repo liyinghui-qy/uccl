@@ -1,7 +1,6 @@
 #ifndef __CUDA_ALLGATHER_H__
 #define __CUDA_ALLGATHER_H__
 
-#include "operators.h"
 #include "ops/allgather/allgather.h"
 #include <nccl.h>
 #include <cuda_runtime.h>

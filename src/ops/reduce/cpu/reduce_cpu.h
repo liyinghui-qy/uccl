@@ -1,7 +1,6 @@
 #ifndef __CPU_REDUCE_H__
 #define __CPU_REDUCE_H__
 
-#include "operators.h"
 #include "ops/reduce/reduce.h"
 
 typedef struct ReduceCpuDescriptor {

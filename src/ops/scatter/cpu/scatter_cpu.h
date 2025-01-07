@@ -1,7 +1,6 @@
 #ifndef __CPU_BROADCAST_H__
 #define __CPU_BROADCAST_H__
 
-#include "operators.h"
 #include "ops/scatter/scatter.h"
 
 typedef struct ScatterCpuDescriptor {

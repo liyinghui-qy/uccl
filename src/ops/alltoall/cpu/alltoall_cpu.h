@@ -1,7 +1,6 @@
 #ifndef __CPU_ALLTOALL_H__
 #define __CPU_ALLTOALL_H__
 
-#include "operators.h"
 #include "ops/alltoall/alltoall.h"
 
 typedef struct AlltoallCpuDescriptor {

@@ -1,7 +1,6 @@
 #ifndef __CPU_ALLGATHER_H__
 #define __CPU_ALLGATHER_H__
 
-#include "operators.h"
 #include "ops/allgather/allgather.h"
 
 typedef struct AllgatherCpuDescriptor {

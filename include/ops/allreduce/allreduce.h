@@ -2,7 +2,7 @@
 #define ALLREDUCE_H
 
 #include "../../export.h"
-#include "../../operators.h"
+#include "../../uccl.h"
 #include "../communicator/communicator.h"
 
 typedef struct AllreduceDescriptor AllreduceDescriptor;

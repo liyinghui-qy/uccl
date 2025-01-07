@@ -1,7 +1,6 @@
 #ifndef __CPU_GATHER_H__
 #define __CPU_GATHER_H__
 
-#include "operators.h"
 #include "ops/gather/gather.h"
 
 typedef struct GatherCpuDescriptor {
