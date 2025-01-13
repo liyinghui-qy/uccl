@@ -1,7 +1,7 @@
 #ifndef __CUDA_RECV_H__
 #define __CUDA_RECV_H__
 
-#include "operators.h"
+
 #include "ops/recv/recv.h"
 #include <nccl.h>
 #include <cuda_runtime.h>

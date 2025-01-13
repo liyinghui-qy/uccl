@@ -1,7 +1,7 @@
 #ifndef __CUDA_REDUCE_H__
 #define __CUDA_REDUCE_H__
 
-#include "operators.h"
+
 #include "ops/reduce/reduce.h"
 #include <nccl.h>
 #include <cuda_runtime.h>

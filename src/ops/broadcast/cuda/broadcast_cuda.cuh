@@ -1,7 +1,7 @@
 #ifndef __CUDA_BROADCAST_H__
 #define __CUDA_BROADCAST_H__
 
-#include "operators.h"
+
 #include "ops/broadcast/broadcast.h"
 #include <nccl.h>
 #include <cuda_runtime.h>

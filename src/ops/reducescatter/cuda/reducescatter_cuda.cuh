@@ -1,7 +1,7 @@
 #ifndef __CUDA_REDUCESCATTER_H__
 #define __CUDA_REDUCESCATTER_H__
 
-#include "operators.h"
+
 #include "ops/reducescatter/reducescatter.h"
 #include <nccl.h>
 #include <cuda_runtime.h>

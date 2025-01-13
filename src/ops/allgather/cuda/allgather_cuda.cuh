@@ -10,7 +10,8 @@ typedef struct AllgatherCudaDescriptor {
     Device device;
 } AllgatherCudaDescriptor;
 
-void nv_gpu_allgather(void* sendbuff, int send_count, CCLDatatype send_datatype, void* recvbuff, int recv_count, CCLDatatype recv_datatype, Communicator* communicator, Stream* stream);
+void nv_gpu_allgather(void* sendbuff, int send_count, CCLDatatype send_datatype, void* recvbuff,
+    int recv_count, CCLDatatype recv_datatype,Communicator* communicator, void* stream);
 
 #endif
 

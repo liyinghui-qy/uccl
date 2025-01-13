@@ -1,7 +1,7 @@
 #ifndef __CUDA_ALLREDUCE_H__
 #define __CUDA_ALLREDUCE_H__
 
-#include "operators.h"
+
 #include "ops/allreduce/allreduce.h"
 #include <nccl.h>
 #include <cuda_runtime.h>
