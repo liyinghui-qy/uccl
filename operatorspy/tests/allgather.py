@@ -76,12 +76,12 @@ def test_gpu(lib):
     send_data_gpu = [None] * config.num_gpus
     recv_data_gpu = [None] * config.num_gpus
 
-    send_data_host = np.random.rand(data_size).astype(np.float32)
     recv_data_host = np.empty(data_size * comm_size.value, dtype=np.float32)
 
     streams = [cuda.Stream() for _ in range(config.num_gpus)]
 
     for i, device_id in enumerate(devices_data):
+        send_data_host = np.random.rand(data_size).astype(np.float32)
         cuda.Device(device_id)
         send_data_gpu[i] = cuda.mem_alloc(data_size * np.float32().nbytes)
         recv_data_gpu[i] = cuda.mem_alloc(data_size * comm_size.value * np.float32().nbytes)
@@ -110,6 +110,15 @@ def test_gpu(lib):
         streams[i].synchronize()
         cuda.memcpy_dtoh(recv_data_host, recv_data_gpu[i])
         print(f"rank {i} receives data: {recv_data_host.tolist()}")
+
+    for i, device_id in enumerate(devices_data):
+        cuda.Device(device_id)
+
+        if send_data_gpu[i] is not None:
+            send_data_gpu[i].free()
+        
+        if recv_data_gpu[i] is not None:
+            recv_data_gpu[i].free()
 
     lib.destroyCommunicatorDescriptor(descriptor)
 
