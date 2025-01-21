@@ -3,16 +3,14 @@ from ctypes import *
 import sys
 import os
 import random
-import pycuda.autoinit
-import pycuda.driver as cuda
-import numpy as np
+import torch
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from datatypes import *
 from operatorspy import (
     open_lib,
     DeviceEnum,
 )
-
+   
 class Config(ctypes.Structure):
     _fields_ = [("num_gpus", ctypes.c_int),
                 ("devices", ctypes.POINTER(ctypes.c_int))]
@@ -62,36 +60,36 @@ def test_gpu(lib):
     config = Config()
     devices_data = [0, 1]
     config.num_gpus = len(devices_data)
-    devices_type = c_int * config.num_gpus
+    devices_type = ctypes.c_int * config.num_gpus
     config.devices = devices_type(*devices_data)
     descriptor = lib.createCommunicatorDescriptor(device, ctypes.byref(config))
-
-    comm = lib.get_communicator(descriptor)
-    rank = c_int(0)
-    lib.get_comm_rank(descriptor, comm, ctypes.byref(rank))
-    comm_size = c_int(0)
-    lib.get_comm_size(descriptor, comm, ctypes.byref(comm_size))
+    comms = lib.get_communicator(descriptor)
+    comm_size = ctypes.c_int(0)
+    rank = ctypes.c_int(0)
+    for i in range(config.num_gpus):
+        lib.get_comm_size(descriptor, ctypes.byref(comms[i]), ctypes.byref(comm_size))
+        lib.get_comm_rank(descriptor, ctypes.byref(comms[i]), ctypes.byref(rank))
+        print("communicator size is:", comm_size.value, "communicator rank is:", rank.value)
 
     data_size = 4
     send_data_gpu = [None] * config.num_gpus
     recv_data_gpu = [None] * config.num_gpus
 
-    recv_data_host = np.empty(data_size * comm_size.value, dtype=np.float32)
+    recv_data_host = torch.empty(data_size * comm_size.value, dtype=torch.float32)
 
-    streams = [cuda.Stream() for _ in range(config.num_gpus)]
+    # streams = [cuda.Stream() for _ in range(config.num_gpus)]
 
     for i, device_id in enumerate(devices_data):
-        send_data_host = np.random.rand(data_size).astype(np.float32)
-        cuda.Device(device_id)
-        send_data_gpu[i] = cuda.mem_alloc(data_size * np.float32().nbytes)
-        recv_data_gpu[i] = cuda.mem_alloc(data_size * comm_size.value * np.float32().nbytes)
-        cuda.memcpy_htod(send_data_gpu[i], send_data_host)
+        torch.cuda.set_device(device_id)
+        send_data_host = torch.rand(data_size, dtype=torch.float32)
+        send_data_gpu[i] = send_data_host.cuda()
+        recv_data_gpu[i] = torch.empty(data_size * comm_size.value, dtype=torch.float32).cuda()
         print(f"rank {i} sends data: {send_data_host.tolist()}")
 
     for i, device_id in enumerate(devices_data):
-        cuda.Device(device_id)
-        send_data_gpu_ptr = c_void_p(int(send_data_gpu[i]))
-        recv_data_gpu_ptr = c_void_p(int(recv_data_gpu[i]))
+        torch.cuda.set_device(device_id)
+        send_data_gpu_ptr = send_data_gpu[i].data_ptr()
+        recv_data_gpu_ptr = recv_data_gpu[i].data_ptr()
 
         lib.Allgather(
             descriptor,
@@ -101,28 +99,21 @@ def test_gpu(lib):
             recv_data_gpu_ptr,
             data_size * comm_size.value,
             datatypes.CCL_FLOAT,
-            comm[i],
-            streams[i].handle
+            comms[i],
+            None
         )
 
+    torch.cuda.synchronize()
+
     for i, device_id in enumerate(devices_data):
-        cuda.Device(device_id)
-        streams[i].synchronize()
-        cuda.memcpy_dtoh(recv_data_host, recv_data_gpu[i])
+        torch.cuda.set_device(device_id)
+        recv_data_host.copy_(recv_data_gpu[i].cpu())
         print(f"rank {i} receives data: {recv_data_host.tolist()}")
-
-    for i, device_id in enumerate(devices_data):
-        cuda.Device(device_id)
-
-        if send_data_gpu[i] is not None:
-            send_data_gpu[i].free()
-        
-        if recv_data_gpu[i] is not None:
-            recv_data_gpu[i].free()
 
     lib.destroyCommunicatorDescriptor(descriptor)
 
-def worker():
+if __name__ == "__main__":
+    print("Start test cpu")
     dl = ctypes.cdll.LoadLibrary
     lib = open_lib()
     lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
@@ -131,32 +122,15 @@ def worker():
     lib.communicator_init.argtypes = [c_void_p]
     lib.get_communicator.restype = ctypes.POINTER(Communicator)
     lib.get_communicator.argtypes = [c_void_p]
-    lib.get_comm_size.restype = c_void_p
-    lib.get_comm_size.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
-    lib.get_comm_rank.restype = c_void_p
-    lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
-    lib.Allgather.restype = c_void_p
-    lib.Allgather.argtypes = [c_void_p, c_void_p, c_int, c_int, c_void_p, c_int, c_int, ctypes.POINTER(Communicator), c_void_p]
-    test_gpu(lib)
-
-if __name__ == "__main__":
-    print("Start test cpu")
-    dl = ctypes.cdll.LoadLibrary
-    lib = open_lib()
-    lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
-    lib.communicator_init.restype = c_void_p
-    lib.communicator_init.argtypes = [c_void_p]
-    lib.get_communicator.restype = c_void_p
-    lib.get_communicator.argtypes = [c_void_p]
     lib.get_comm_rank.restype = c_void_p
     lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     lib.get_comm_size.restype = c_void_p
     lib.get_comm_size.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     lib.createAlltoallDescriptor.restype = c_void_p
     lib.Allgather.restype = c_void_p
-    lib.Allgather.argtypes = [c_void_p, c_void_p, c_int, c_int, c_void_p, c_int, c_int, c_void_p, c_void_p]
+    lib.Allgather.argtypes = [c_void_p, c_void_p, c_int, c_int, c_void_p, c_int, c_int, ctypes.POINTER(Communicator), c_void_p]
     print("Start test", flush = True)
     test_cpu(lib)
 
-    print("Start test gpu")
-    worker()
+    print("Start test gpu", flush = True)
+    test_gpu(lib)

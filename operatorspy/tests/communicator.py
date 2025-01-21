@@ -62,7 +62,7 @@ def worker():
     lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
     lib.createCommunicatorDescriptor.argtypes = [ctypes.c_int, c_void_p]
     lib.communicator_init.restype = c_void_p
-    lib.communicator_init.argtypes = [c_void_p, c_void_p]
+    lib.communicator_init.argtypes = [c_void_p]
     lib.get_communicator.restype = ctypes.POINTER(Communicator)
     lib.get_communicator.argtypes = [c_void_p]
     lib.get_comm_size.restype = c_void_p
