@@ -5,6 +5,7 @@ import os
 import random
 import torch
 import numpy as np
+import math
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from datatypes import *
 from operatorspy import (
@@ -39,7 +40,7 @@ def test_cpu(lib):
     comm_size = ctypes.c_int(0)
     lib.get_comm_size(descriptor, comm, ctypes.byref(comm_size))
     
-    data_size = 2
+    data_size = 20
     send_array_type = ctypes.c_int * (data_size * comm_size.value)
     send_data = send_array_type()
     recv_array_type = ctypes.c_int * data_size
@@ -84,11 +85,12 @@ def test_gpu(lib):
         lib.get_comm_rank(descriptor, ctypes.byref(comms[i]), ctypes.byref(rank))
         print("communicator size is:", comm_size.value, "communicator rank is:", rank.value)
 
-    data_size = 20
+    data_size = 10
     send_data_gpu = [None] * config.num_gpus
     recv_data_gpu = [None] * config.num_gpus
     
-    recvcounts = [0] * config.num_gpus
+    recvcount = math.ceil(data_size/config.num_gpus)
+    recvcounts = [recvcount] * config.num_gpus
     recvcounts_array = (ctypes.c_int * len(recvcounts))(*recvcounts)
 
     recv_data_host = torch.empty(data_size * comm_size.value, dtype=torch.float32)
