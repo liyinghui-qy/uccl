@@ -130,4 +130,3 @@ if __name__ == "__main__":
 
     print("Start Gpu test", flush = True)
     test_gpu(lib)
-    

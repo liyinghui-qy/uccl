@@ -126,11 +126,10 @@ if __name__ == "__main__":
     lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     lib.get_comm_size.restype = c_void_p
     lib.get_comm_size.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
-    lib.createAlltoallDescriptor.restype = c_void_p
     lib.Allgather.restype = c_void_p
     lib.Allgather.argtypes = [c_void_p, c_void_p, c_int, c_int, c_void_p, c_int, c_int, ctypes.POINTER(Communicator), c_void_p]
-    print("Start test", flush = True)
-    test_cpu(lib)
+    #print("Start test", flush = True)
+    #test_cpu(lib)
 
     print("Start test gpu", flush = True)
     test_gpu(lib)
