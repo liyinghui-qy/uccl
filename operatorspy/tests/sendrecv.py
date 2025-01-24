@@ -5,6 +5,7 @@ import os
 import pycuda.autoinit
 import pycuda.driver as cuda
 import numpy as np
+import torch
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from datatypes import *
 from operatorspy import (
@@ -67,39 +68,47 @@ def test_gpu(lib):
     devices_type = c_int * config.num_gpus
     config.devices = devices_type(*devices_data)
     descriptor = lib.createCommunicatorDescriptor(device, ctypes.byref(config))
-
-    comm = lib.get_communicator(descriptor)
+    comms = lib.get_communicator(descriptor)
     rank = c_int(0)
-    lib.get_comm_rank(descriptor, comm, ctypes.byref(rank))
     comm_size = c_int(0)
-    lib.get_comm_size(descriptor, comm, ctypes.byref(comm_size))
+    for i in range(config.num_gpus):
+        lib.get_comm_rank(descriptor, ctypes.byref(comms[i]), ctypes.byref(rank))
+        lib.get_comm_size(descriptor, ctypes.byref(comms[i]), ctypes.byref(comm_size))
+        print("communicator size is:", comm_size.value, "communicator rank is:", rank.value)
 
-    data_size = 20
+    data_size = 10
+    send_data_gpu = []
+    recv_data_gpu = []
 
     recv_data_host = np.empty(data_size, dtype=np.float32)
 
     streams = [cuda.Stream() for _ in range(config.num_gpus)]
 
     for i, device_id in enumerate(devices_data):
-        cuda.Device(device_id)      
-
+        torch.cuda.set_device(device_id)
+        print(device_id)
         if device_id == 0:
-            send_data_host = np.random.rand(data_size).astype(np.float32)
-            send_data_gpu = cuda.mem_alloc(data_size * np.float32().nbytes)
-            cuda.memcpy_htod(send_data_gpu, send_data_host)
+            send_data_host = torch.rand(data_size, dtype=torch.float32)
+            send_data_gpu = send_data_host.cuda()
+            print(send_data_gpu)
         else:
-            recv_data_gpu = cuda.mem_alloc(data_size * np.float32().nbytes)
+            recv_data_gpu = torch.empty(data_size, dtype=torch.float32).cuda()
+            print(recv_data_gpu)
 
+    
     for i, device_id in enumerate(devices_data):
-        cuda.Device(device_id)
+        torch.cuda.set_device(device_id)
         if device_id == 0:
             print("start send", flush = True)
-            send_data_gpu_ptr = c_void_p(int(send_data_gpu))
-            lib.Send(descriptor, send_data_gpu_ptr, data_size, datatypes.CCL_FLOAT, 1, comm, None)
-        else:
+            send_data_gpu_ptr = send_data_gpu.data_ptr()
+            lib.Send(descriptor, send_data_gpu_ptr, data_size, datatypes.CCL_FLOAT, 1, ctypes.byref(comms[i]), None)
+            print("send finished", flush = True)
+        elif device_id == 1:
             print("start recv", flush = True)
-            recv_data_gpu_ptr = c_void_p(int(recv_data_gpu))
-            lib.Recv(descriptor, recv_data_gpu_ptr, data_size, datatypes.CCL_FLOAT, 0, comm, 0, None)
+            recv_data_gpu_ptr = recv_data_gpu.data_ptr()
+            lib.Recv(descriptor, recv_data_gpu_ptr, data_size, datatypes.CCL_FLOAT, 0, ctypes.byref(comms[i]), None, None)
+            
+    torch.cuda.synchronize()
 
     for i, device_id in enumerate(devices_data):
         cuda.Device(device_id)
@@ -115,25 +124,18 @@ def worker():
     lib.createCommunicatorDescriptor.restype = ctypes.POINTER(CommunicatorDescriptor)
     lib.communicator_init.restype = c_void_p
     lib.communicator_init.argtypes = [c_void_p]
-    lib.get_communicator.restype = c_void_p
+    lib.get_communicator.restype = ctypes.POINTER(Communicator)
     lib.get_communicator.argtypes = [c_void_p]
     lib.createSendDescriptor.restype = ctypes.POINTER(SendDescriptor)
     lib.Send.restype = c_void_p
-    lib.Send.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, c_void_p]
+    lib.Send.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, ctypes.POINTER(Communicator), c_void_p]
     lib.createRecvDescriptor.restype = ctypes.POINTER(RecvDescriptor)
     lib.Recv.restype = c_void_p
-    lib.Recv.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, c_void_p, c_void_p]
+    lib.Recv.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, ctypes.POINTER(Communicator), c_void_p, c_void_p]
     lib.get_comm_rank.restype = c_void_p
     lib.get_comm_rank.argtypes = [c_void_p, c_void_p, ctypes.POINTER(ctypes.c_int)]
     print("Start test", flush = True)
-    #test_cpu(lib)
-
-    lib.get_communicator.restype = ctypes.POINTER(Communicator)
-    lib.get_communicator.argtypes = [c_void_p]
-    lib.Send.restype = c_void_p
-    lib.Send.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, ctypes.POINTER(Communicator), c_void_p]
-    lib.Recv.restype = c_void_p
-    lib.Recv.argtypes = [c_void_p, c_void_p, c_int, c_int, c_int, ctypes.POINTER(Communicator), c_void_p, c_void_p]
+    #test_cpu(lib)    
 
     print("Start Gpu test", flush = True)
     test_gpu(lib)
