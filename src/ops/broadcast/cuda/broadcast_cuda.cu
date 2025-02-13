@@ -15,5 +15,10 @@ void nv_gpu_broadcast(void* buff, int count, CCLDatatype datatype, int root, Com
     cudaStream_t* cudaStream = (cudaStream_t*) stream;
 
     cudaSetDevice(communicator->deviceID);
-    NCCLCHECK(ncclAllGather(buff, buff, count, datatype_cuda, comm, 0));
+    if (stream == nullptr) {
+        NCCLCHECK(ncclBroadcast(buff, buff, count, datatype_cuda, root, comm, 0));
+    }
+    else {
+        NCCLCHECK(ncclBroadcast(buff, buff, count, datatype_cuda, root, comm, *cudaStream));
+    }
 }

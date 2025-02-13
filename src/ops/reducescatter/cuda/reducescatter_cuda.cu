@@ -16,5 +16,10 @@ void nv_gpu_reducescatter(void* sendbuff, void* recvbuff, int* recvcounts, CCLDa
     cudaStream_t* cudaStream = (cudaStream_t*) stream;
 
     cudaSetDevice(communicator->deviceID);
-    NCCLCHECK(ncclReduceScatter(sendbuff, recvbuff, *recvcounts, datatype_cuda, op_cuda, comm, 0));
+    if (stream == nullptr) {
+        NCCLCHECK(ncclReduceScatter(sendbuff, recvbuff, *recvcounts, datatype_cuda, op_cuda, comm, 0));
+    }
+    else {
+        NCCLCHECK(ncclReduceScatter(sendbuff, recvbuff, *recvcounts, datatype_cuda, op_cuda, comm, *cudaStream));
+    }
 }
