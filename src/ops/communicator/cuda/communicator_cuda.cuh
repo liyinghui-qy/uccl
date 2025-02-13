@@ -1,7 +1,7 @@
 #ifndef __CUDA_COMMUNICATOR_H__
 #define __CUDA_COMMUNICATOR_H__
 
-#include "operators.h"
+
 #include "ops/communicator/communicator.h"
 
 typedef struct CommunicatorCudaDescriptor {

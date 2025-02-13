@@ -1,7 +1,7 @@
 #ifndef __CUDA_SEND_H__
 #define __CUDA_SEND_H__
 
-#include "operators.h"
+
 #include "ops/send/send.h"
 #include <nccl.h>
 #include <cuda_runtime.h>

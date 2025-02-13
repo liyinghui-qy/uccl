@@ -26,21 +26,13 @@ Communicator* get_nv_gpu_communicator(CommunicatorDescriptor* descriptor) {
         communicators[i].deviceID = dcp->devices[i];
         communicators[i].deviceType = dcp->device;
         communicators[i].comm = (void*)comms[i];
-        //int* size = new int[1];
-        //std::cout << "get communicator" << std::endl;
-        //get_nv_gpu_comm_size(&communicators[i], size);
-        //NCCLCHECK(ncclCommCount(comms[i], size));
-        //NCCLCHECK(ncclCommCount((ncclComm_t)communicators[i].comm, size));
-        //std::cout << "comm size is:" << *size << std::endl;
     }
     return communicators;
 }
 
 void get_nv_gpu_comm_size(Communicator* communicator, int* size) {
-    //printf("deviceID is %d, device tyep is %d\n", communicator->deviceID, communicator->deviceType);
     ncclComm_t comm_nccl = (ncclComm_t)communicator->comm;
     NCCLCHECK(ncclCommCount(comm_nccl, size));
-    //printf("nccl size get!\n");
 }
 
 void get_nv_gpu_comm_rank(Communicator* communicator, int* rank) {

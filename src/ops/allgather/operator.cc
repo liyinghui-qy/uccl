@@ -1,6 +1,6 @@
 #include "../utils.h"
 #include "ops/allgather/allgather.h"
-
+#include <iostream>
 #ifdef ENABLE_CPU
 #include "cpu/allgather_cpu.h"
 #endif
@@ -61,7 +61,8 @@ __C __export void destroyAllgatherDescriptor(AllgatherDescriptor *descriptor) {
 }
 
 
-__C __export void Allgather(AllgatherDescriptor *descriptor, void* sendbuff, int send_count, CCLDatatype send_datatype, void* recvbuff, int recv_count, CCLDatatype recv_datatype, Communicator* communicator, Stream* stream) {
+__C __export void Allgather(AllgatherDescriptor *descriptor, void* sendbuff, int send_count, CCLDatatype send_datatype,
+    void* recvbuff, int recv_count, CCLDatatype recv_datatype, Communicator* communicator, void* stream) {
     switch (descriptor->device) {
 #ifdef ENABLE_CPU
         case DevCpu:

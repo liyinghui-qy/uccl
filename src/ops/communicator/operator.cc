@@ -10,7 +10,7 @@
 #ifdef ENABLE_CAMBRICON_MLU
 #include "bang/communicator_cnnl.h"
 #endif
-
+#include <iostream>
 struct CommunicatorDescriptor {
     Device device;
 };
